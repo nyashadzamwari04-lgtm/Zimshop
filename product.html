@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZimShop | Product</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html">ZimShop</a><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="cart.html">Cart <span id="cartCount">0</span></a></nav></div></header>
+<main class="container" id="productArea"></main>
+<script src="app.js"></script>
+<script>
+const products = [
+  {id:"P001", name:"Laptop", category:"Electronics", price:850, description:"A practical laptop for work, study and business."},
+  {id:"P002", name:"Wireless Headphones", category:"Electronics", price:75, description:"Comfortable wireless headphones for everyday use."},
+  {id:"P003", name:"Smartphone", category:"Electronics", price:450, description:"A modern smartphone for communication and mobile business."},
+  {id:"P004", name:"Backpack", category:"Fashion", price:40, description:"Durable backpack for school, work and travel."},
+  {id:"P005", name:"Running Shoes", category:"Fashion", price:65, description:"Lightweight shoes for everyday activity."},
+  {id:"P006", name:"Office Chair", category:"Home", price:120, description:"Comfortable chair for a productive workspace."}
+];
+const id = new URLSearchParams(location.search).get("id");
+const p = products.find(x => x.id === id) || products[0];
+
+document.getElementById("productArea").innerHTML = `
+  <div class="product-detail">
+    <div class="product-img large">${p.name.charAt(0)}</div>
+    <div>
+      <span class="tag">${p.category}</span>
+      <h1>${p.name}</h1>
+      <p>${p.description}</p>
+      <h2>$${p.price.toFixed(2)}</h2>
+      <label>Quantity <input id="qty" type="number" min="1" value="1"></label>
+      <br><br>
+      <button class="btn" id="addBtn">Add to Cart</button>
+    </div>
+  </div>`;
+trackEvent("product_view", {product_id:p.id, product_name:p.name, category:p.category, price:p.price});
+
+document.getElementById("addBtn").addEventListener("click", () => {
+  const qty = Math.max(1, Number(document.getElementById("qty").value));
+  addToCart(p, qty);
+  trackEvent("add_to_cart", {product_id:p.id, product_name:p.name, quantity:qty, value:p.price*qty});
+  alert("Product added to cart.");
+});
+</script>
+</body>
+</html>

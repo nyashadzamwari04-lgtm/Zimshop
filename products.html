@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZimShop | Products</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html">ZimShop</a><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="cart.html">Cart <span id="cartCount">0</span></a></nav></div></header>
+
+<main class="container">
+  <h1>Products</h1>
+  <div class="search-row">
+    <input id="searchBox" type="search" placeholder="Search products...">
+    <button class="btn" id="searchBtn">Search</button>
+  </div>
+  <div id="products" class="grid three"></div>
+</main>
+<script src="app.js"></script>
+<script>
+const products = [
+  {id:"P001", name:"Laptop", category:"Electronics", price:850},
+  {id:"P002", name:"Wireless Headphones", category:"Electronics", price:75},
+  {id:"P003", name:"Smartphone", category:"Electronics", price:450},
+  {id:"P004", name:"Backpack", category:"Fashion", price:40},
+  {id:"P005", name:"Running Shoes", category:"Fashion", price:65},
+  {id:"P006", name:"Office Chair", category:"Home", price:120}
+];
+
+function renderProducts(list) {
+  const el = document.getElementById("products");
+  el.innerHTML = list.map(p => `
+    <article class="card product">
+      <div class="product-img">${p.name.charAt(0)}</div>
+      <span class="tag">${p.category}</span>
+      <h3>${p.name}</h3>
+      <p class="price">$${p.price.toFixed(2)}</p>
+      <a class="btn small" href="product.html?id=${p.id}" onclick='trackEvent("product_click",{product_id:"${p.id}",product_name:"${p.name}"})'>View Product</a>
+    </article>
+  `).join("");
+  trackEvent("product_list_view", {product_count:list.length});
+}
+
+function runSearch() {
+  const q = document.getElementById("searchBox").value.trim();
+  const result = products.filter(p => p.name.toLowerCase().includes(q.toLowerCase()) || p.category.toLowerCase().includes(q.toLowerCase()));
+  trackEvent("search", {search_term:q, results_count:result.length});
+  renderProducts(result);
+}
+document.getElementById("searchBtn").addEventListener("click", runSearch);
+document.getElementById("searchBox").addEventListener("keydown", e => { if(e.key==="Enter") runSearch(); });
+renderProducts(products);
+</script>
+</body>
+</html>

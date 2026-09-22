@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZimShop | Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html">ZimShop</a><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="cart.html">Cart <span id="cartCount">0</span></a></nav></div></header>
+<main class="container narrow">
+  <h1>Checkout</h1>
+  <form id="checkoutForm" class="card">
+    <label>Name<input required name="name" placeholder="Student Customer"></label>
+    <label>Email<input required type="email" name="email" placeholder="student@example.com"></label>
+    <label>Province
+      <select name="province"><option>Harare</option><option>Bulawayo</option><option>Manicaland</option><option>Midlands</option><option>Other</option></select>
+    </label>
+    <label>Payment Method
+      <select name="payment"><option>Mobile Money</option><option>Card</option><option>Bank Transfer</option></select>
+    </label>
+    <button class="btn" type="submit">Place Order</button>
+  </form>
+</main>
+<script src="app.js"></script>
+<script>
+trackEvent("checkout_view");
+document.getElementById("checkoutForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  const cart=getCart();
+  const total=cart.reduce((s,x)=>s+x.price*x.quantity,0);
+  const orderId="ORD"+Date.now().toString().slice(-7);
+  localStorage.setItem("lastOrder",JSON.stringify({orderId,...data,total}));
+  trackEvent("purchase",{order_id:orderId,value:total,payment_method:data.payment,province:data.province});
+  localStorage.removeItem("cart");
+  location.href="confirmation.html";
+});
+</script>
+</body>
+</html>

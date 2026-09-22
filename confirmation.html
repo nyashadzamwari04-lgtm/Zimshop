@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZimShop | Confirmation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html">ZimShop</a><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="cart.html">Cart <span id="cartCount">0</span></a></nav></div></header>
+<main class="container narrow">
+  <div class="card success">
+    <h1>Thank You!</h1>
+    <p id="orderText"></p>
+    <a class="btn" href="products.html">Shop Again</a>
+  </div>
+</main>
+<script src="app.js"></script>
+<script>
+const o=JSON.parse(localStorage.getItem("lastOrder")||"{}");
+document.getElementById("orderText").textContent=`Order ${o.orderId||""} completed successfully. Total: $${Number(o.total||0).toFixed(2)}.`;
+trackEvent("confirmation_view",{order_id:o.orderId});
+</script>
+</body>
+</html>

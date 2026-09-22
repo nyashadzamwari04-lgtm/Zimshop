@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZimShop | Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html">ZimShop</a><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="cart.html">Cart <span id="cartCount">0</span></a></nav></div></header>
+<main class="container">
+  <h1>Your Cart</h1>
+  <div id="cart"></div>
+</main>
+<script src="app.js"></script>
+<script>
+function renderCart(){
+  const cart = getCart();
+  const el = document.getElementById("cart");
+  if(!cart.length){
+    el.innerHTML='<div class="card"><p>Your cart is empty.</p><a class="btn" href="products.html">Continue Shopping</a></div>';
+    return;
+  }
+  const total=cart.reduce((s,x)=>s+x.price*x.quantity,0);
+  el.innerHTML=cart.map(x=>`<div class="cart-item"><div><strong>${x.name}</strong><br>Qty: ${x.quantity}</div><strong>$${(x.price*x.quantity).toFixed(2)}</strong></div>`).join("")+
+  `<div class="total"><strong>Total: $${total.toFixed(2)}</strong></div>
+   <a class="btn" href="checkout.html" id="checkoutBtn">Proceed to Checkout</a>`;
+  document.getElementById("checkoutBtn").addEventListener("click",()=>trackEvent("begin_checkout",{cart_value:total,item_count:cart.length}));
+  trackEvent("cart_view",{cart_value:total,item_count:cart.length});
+}
+renderCart();
+</script>
+</body>
+</html>
